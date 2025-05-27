@@ -1,8 +1,4 @@
-// imports and applies the jest extensions
-import 'archunit/dist/jest';
-
-// imports the files entrypoint
-import { filesOfProject } from 'archunit';
+import { projectFiles } from 'archunit';
 
 describe('architecture', () => {
 	// architecture tests can take a while to finish
@@ -10,7 +6,7 @@ describe('architecture', () => {
 
 	// we use async await in combination with jest since this project uses asynchronous calls
 	it('business logic should not depend on the ui', async () => {
-		const rule = filesOfProject()
+		const rule = projectFiles()
 			.inFolder('business')
 			.shouldNot()
 			.dependOnFiles()
@@ -20,14 +16,14 @@ describe('architecture', () => {
 	});
 
 	it('business logic should be cycle free', async () => {
-		const rule = filesOfProject().inFolder('business').should().beFreeOfCycles();
+		const rule = projectFiles().inFolder('business').should().haveNoCycles();
 
 		await expect(rule).toPassAsync();
 	});
 
 	// we use async await in combination with jest since this project uses asynchronous calls
 	it('ui logic should not depend on database logic', async () => {
-		const rule = filesOfProject()
+		const rule = projectFiles()
 			.inFolder('ui')
 			.shouldNot()
 			.dependOnFiles()
