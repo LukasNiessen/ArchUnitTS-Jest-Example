@@ -4,7 +4,6 @@ describe('architecture', () => {
 	// architecture tests can take a while to finish
 	jest.setTimeout(60000);
 
-	// we use async await in combination with jest since this project uses asynchronous calls
 	it('business logic should not depend on the ui', async () => {
 		const rule = projectFiles()
 			.inFolder('business')
@@ -21,7 +20,6 @@ describe('architecture', () => {
 		await expect(rule).toPassAsync();
 	});
 
-	// we use async await in combination with jest since this project uses asynchronous calls
 	it('ui logic should not depend on database logic', async () => {
 		const rule = projectFiles()
 			.inFolder('ui')
