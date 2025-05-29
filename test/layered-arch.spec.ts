@@ -1,32 +1,31 @@
-import { projectFiles } from 'archunit';
+import { metrics, projectFiles } from 'archunit';
 
-describe('architecture', () => {
-	// architecture tests can take a while to finish
-	jest.setTimeout(60000);
-
-	it('business logic should not depend on the ui', async () => {
-		const rule = projectFiles()
-			.inFolder('business')
-			.shouldNot()
-			.dependOnFiles()
-			.inFolder('ui');
-
+describe('architecture rules', () => {
+	it('should not have cyclic dependencies', async () => {
+		const rule = projectFiles().inFolder('src').should().haveNoCycles();
 		await expect(rule).toPassAsync();
 	});
 
-	it('business logic should be cycle free', async () => {
-		const rule = projectFiles().inFolder('business').should().haveNoCycles();
+	describe('layered architecture rules', () => {
+		it('should not have dependencies from business to database', async () => {
+			const rule = projectFiles()
+				.inFolder('src/business')
+				.shouldNot()
+				.dependOnFiles()
+				.inFolder('src/database');
 
-		await expect(rule).toPassAsync();
+			await expect(rule).toPassAsync();
+		});
+
+		// TODO: add more layers
 	});
 
-	it('ui logic should not depend on database logic', async () => {
-		const rule = projectFiles()
-			.inFolder('ui')
-			.shouldNot()
-			.dependOnFiles()
-			.inFolder('database');
+	describe('code metric rules', () => {
+		it('should not have huge files', async () => {
+			const rule = metrics().count().linesOfCode().shouldBeBelow(1000);
+			await expect(rule).toPassAsync();
+		});
 
-		await expect(rule).toPassAsync();
+		// TODO: add more metric rules
 	});
 });
